@@ -80,7 +80,7 @@ export default function DetectionPage() {
             Real-time PPE compliance dan hazard detection menggunakan AI Computer Vision
           </p>
           <p className="text-sm text-gray-500">
-            Powered by YOLOv12 (95.1% accuracy) & Faster R-CNN (98% worker detection)
+            Powered by YOLOv12 Small (94.5% accuracy) & Faster R-CNN (98% worker detection)
           </p>
         </div>
 

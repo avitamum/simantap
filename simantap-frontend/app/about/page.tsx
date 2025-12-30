@@ -7,7 +7,7 @@ export default function AboutPage() {
   const stats = [
     { value: '462,241', label: 'Annual Workplace Accidents', source: 'BPJS Ketenagakerjaan' },
     { value: '3', label: 'Provinces with Highest Incidents', source: 'Jatim, Jabar, Jateng' },
-    { value: '95%+', label: 'Detection Accuracy', source: 'YOLOv12 & Faster R-CNN' },
+    { value: '95%+', label: 'Detection Accuracy', source: 'YOLOv12 Medium & Faster R-CNN' },
     { value: '24/7', label: 'Real-Time Monitoring', source: 'Continuous Protection' }
   ]
 

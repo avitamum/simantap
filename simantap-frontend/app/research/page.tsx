@@ -26,19 +26,19 @@ export default function ResearchPage() {
     {
       icon: Zap,
       title: '95.1% Akurasi',
-      description: 'YOLOv12 mencapai F1-Score tertinggi untuk helmet detection',
+      description: 'YOLOv12 Medium mencapai F1-Score tertinggi untuk helmet detection',
       color: 'emerald'
     }
   ]
 
   const findings = [
     {
-      title: 'PPE Detection Excellence',
+      title: 'Model Performance Comparison',
       stats: [
-        { label: 'Helmet Detection', value: '95.1%', model: 'YOLOv12' },
-        { label: 'Safety Vest', value: '95.4%', model: 'YOLOv12' },
-        { label: 'Safety Shoes', value: '92.6%', model: 'YOLOv12' },
-        { label: 'Worker Detection', value: '93.4%', model: 'YOLOv12' }
+        { label: 'YOLOv12 Nano (Baseline)', value: '92.8%', model: 'Helmet' },
+        { label: 'YOLOv12 Small (Balanced)', value: '94.5%', model: 'Helmet' },
+        { label: 'YOLOv12 Medium (Complex)', value: '95.1%', model: 'Helmet - BEST' },
+        { label: 'Faster R-CNN (Benchmark)', value: '98.0%', model: 'Worker' }
       ],
       bgColor: 'emerald'
     }
@@ -160,9 +160,10 @@ export default function ResearchPage() {
                   <h3 className="font-bold text-gray-900 mb-3 text-lg">Models Evaluated</h3>
                   <div className="space-y-2">
                     {[
-                      { name: 'YOLOv12', desc: 'Real-time single-shot detector - BEST PERFORMER' },
-                      { name: 'Faster R-CNN', desc: 'Region-based CNN approach - Strong on structured detection' },
-                      { name: 'Baseline Model', desc: 'Lightweight reference model' }
+                      { name: 'YOLOv12 Nano', desc: 'Baseline: Paling ringan untuk embedded systems' },
+                      { name: 'YOLOv12 Small', desc: 'Balanced: Tengah-tengah antara akurasi & performa' },
+                      { name: 'YOLOv12 Medium', desc: 'Complex: Arsitektur rumit dengan akurasi tertinggi - BEST PERFORMER' },
+                      { name: 'Faster R-CNN', desc: 'Benchmark: Two-stage detector untuk perbandingan algoritma' }
                     ].map((m, idx) => (
                       <div key={idx} className="p-3 bg-emerald-50 border border-emerald-200 rounded">
                         <p className="font-semibold text-emerald-900">{m.name}</p>

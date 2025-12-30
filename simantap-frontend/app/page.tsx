@@ -35,8 +35,8 @@ export default function HomePage() {
 
   const stats = [
     { value: '462,241', label: 'Kecelakaan Kerja/Tahun', sublabel: 'Data BPJS Ketenagakerjaan' },
-    { value: '95.1%', label: 'Akurasi Deteksi Helmet', sublabel: 'YOLOv12 F1-Score' },
-    { value: '93.4%', label: 'Akurasi Deteksi Worker', sublabel: 'Faster R-CNN' },
+    { value: '95.1%', label: 'Akurasi Deteksi Helmet', sublabel: 'YOLOv12 Medium (Best)' },
+    { value: '98.0%', label: 'Akurasi Deteksi Worker', sublabel: 'Faster R-CNN (Benchmark)' },
     { value: '3 Provinsi', label: 'Tertinggi Insiden', sublabel: 'Jatim, Jabar, Jateng' }
   ]
 
@@ -78,7 +78,7 @@ export default function HomePage() {
 
             {/* Description */}
             <p className="text-xl text-gray-600 mb-8 leading-relaxed max-w-3xl mx-auto">
-              Computer Vision untuk deteksi <span className="font-semibold text-emerald-600">PPE Compliance</span> dan <span className="font-semibold text-emerald-600">STF Hazards</span> menggunakan deep learning YOLOv12 dan Faster R-CNN
+              Computer Vision untuk deteksi <span className="font-semibold text-emerald-600">PPE Compliance</span> dan <span className="font-semibold text-emerald-600">STF Hazards</span> menggunakan deep learning YOLOv12 (Nano, Small, Medium) dan Faster R-CNN
             </p>
 
             {/* CTA Buttons */}
@@ -203,7 +203,7 @@ export default function HomePage() {
               {
                 num: '02',
                 title: 'AI Detection',
-                desc: 'YOLOv12 dan Faster R-CNN menganalisis frame untuk deteksi APD dan worker',
+                desc: 'YOLOv12 (Nano/Small/Medium) dan Faster R-CNN menganalisis frame untuk deteksi APD dan worker',
                 icon: Zap
               },
               {
@@ -345,17 +345,31 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {[
               {
-                name: 'YOLOv12',
-                desc: 'Object detection real-time dengan akurasi tinggi',
-                specs: ['Helmet Detection: 95.1%', 'Vest Detection: 95.4%', 'Shoes Detection: 92.6%']
+                name: 'YOLOv12 Nano',
+                category: 'Baseline: Paling Ringan',
+                desc: 'Model paling lightweight untuk embedded systems',
+                specs: ['Model Size: 3.0MB', 'Inference: <50ms', 'Memory: 256MB', 'Helmet Acc: 92.8%']
+              },
+              {
+                name: 'YOLOv12 Small',
+                category: 'Balanced: Tengah-tengah',
+                desc: 'Balance sempurna antara akurasi dan performa',
+                specs: ['Model Size: 27MB', 'Inference: 60-80ms', 'Memory: 512MB', 'Helmet Acc: 94.5%']
+              },
+              {
+                name: 'YOLOv12 Medium',
+                category: 'Complex: Arsitektur Rumit',
+                desc: 'Arsitektur paling advanced untuk precision tinggi',
+                specs: ['Model Size: 52MB', 'Inference: 100-120ms', 'Memory: 1GB', 'Helmet: 95.1%', 'Vest: 95.4%']
               },
               {
                 name: 'Faster R-CNN',
-                desc: 'Advanced region-based detection untuk worker hazard',
-                specs: ['Worker Detection: 98.0%', 'Helmet Detection: 90.9%', 'Vest Detection: 97.4%']
+                category: 'Benchmark: Pembanding Algoritma',
+                desc: 'Region-based CNN untuk baseline perbandingan',
+                specs: ['Two-stage detector', 'Inference: 150-200ms', 'Worker Acc: 98.0%', 'Helmet: 90.9%', 'Vest: 97.4%']
               }
             ].map((tech, idx) => (
               <motion.div
@@ -366,11 +380,14 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 className="bg-gradient-to-br from-emerald-900/30 to-emerald-800/20 rounded-xl p-8 border border-emerald-500/30 hover:border-emerald-400/60 transition-colors group"
               >
-                <h3 className="text-2xl font-bold text-white mb-3 flex items-center space-x-2">
-                  <Zap className="w-6 h-6 text-emerald-400" />
-                  <span>{tech.name}</span>
-                </h3>
-                <p className="text-gray-300 mb-6">{tech.desc}</p>
+                <div className="mb-3">
+                  <h3 className="text-2xl font-bold text-white flex items-center space-x-2">
+                    <Zap className="w-6 h-6 text-emerald-400" />
+                    <span>{tech.name}</span>
+                  </h3>
+                  <p className="text-xs text-emerald-300 mt-1 font-semibold">{tech.category}</p>
+                </div>
+                <p className="text-gray-300 mb-6 text-sm">{tech.desc}</p>
                 <div className="space-y-2">
                   {tech.specs.map((spec, i) => (
                     <div key={i} className="flex items-center space-x-2 text-emerald-300">
