@@ -279,7 +279,7 @@ export default function ResearchPage() {
                 email: '222313008@stis.ac.id'
               },
               {
-                name: 'Nur Nai\'mah Ma\'ruf',
+                name: 'Nur Na\'Imah Ma\'r]Ruf',
                 role: 'Co-Researcher',
                 email: '222313302@stis.ac.id'
               },
