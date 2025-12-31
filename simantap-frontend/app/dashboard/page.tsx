@@ -38,19 +38,17 @@ export default function DashboardPage() {
   ]
 
   const modelPerformanceData = [
-    { model: 'YOLOv12 Nano', helmet: 92.8, vest: 91.5, shoes: 89.2, worker: 90.1 },
-    { model: 'YOLOv12 Small', helmet: 94.5, vest: 93.8, shoes: 91.3, worker: 92.7 },
-    { model: 'YOLOv12 Medium', helmet: 95.1, vest: 95.4, shoes: 92.6, worker: 93.4 },
-    { model: 'Faster R-CNN', helmet: 90.9, vest: 97.4, shoes: 88.8, worker: 98.0 }
+    { model: 'YOLOv12 Nano', helmet: 95.1, vest: 95.4, shoes: 92.6, worker: 93.4 },
+    { model: 'YOLOv12 Small', helmet: 95.31, vest: 95.51, shoes: 92.51, worker: 93.41 },
+    { model: 'YOLOv12 Medium', helmet: 95.88, vest: 95.88, shoes: 92.6, worker: 93.4 },
+    { model: 'Faster R-CNN', helmet: 87.5, vest: 88.5, shoes: 87.0, worker: 88.5 }
   ]
 
   const accuracyTrendData = [
-    { month: 'Jan', nano: 85, small: 87, medium: 88, rcnn: 85 },
-    { month: 'Feb', nano: 87, small: 89, medium: 90, rcnn: 87 },
-    { month: 'Mar', nano: 89, small: 91, medium: 92, rcnn: 89 },
-    { month: 'Apr', nano: 90, small: 92, medium: 93, rcnn: 91 },
-    { month: 'May', nano: 91, small: 93, medium: 94, rcnn: 92 },
-    { month: 'Jun', nano: 92.5, small: 94.5, medium: 95.1, rcnn: 93.4 }
+    { month: 'Phase 1', nano: 75.83, small: 76.80, medium: 77.72, rcnn: 51.43 },
+    { month: 'Phase 2', nano: 95.63, small: 95.63, medium: 95.88, rcnn: 88.51 },
+    { month: 'Phase 3', nano: 97.77, small: 97.41, medium: 97.54, rcnn: 95.55 },
+    { month: 'Final', nano: 97.77, small: 97.41, medium: 97.54, rcnn: 95.55 }
   ]
 
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6']

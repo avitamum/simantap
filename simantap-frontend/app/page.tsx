@@ -35,8 +35,8 @@ export default function HomePage() {
 
   const stats = [
     { value: '462,241', label: 'Kecelakaan Kerja/Tahun', sublabel: 'Data BPJS Ketenagakerjaan' },
-    { value: '95.1%', label: 'Akurasi Deteksi Helmet', sublabel: 'YOLOv12 Medium (Best)' },
-    { value: '98.0%', label: 'Akurasi Deteksi Worker', sublabel: 'Faster R-CNN (Benchmark)' },
+    { value: '95.88%', label: 'F1-Score PPE Detection', sublabel: 'YOLOv12 Medium (Safety Competition 2026)' },
+    { value: '78.53%', label: 'F1-Score STF Detection', sublabel: 'YOLOv12 Nano (Safety Competition 2026)' },
     { value: '3 Provinsi', label: 'Tertinggi Insiden', sublabel: 'Jatim, Jabar, Jateng' }
   ]
 

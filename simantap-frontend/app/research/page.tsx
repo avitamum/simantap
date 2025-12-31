@@ -25,8 +25,8 @@ export default function ResearchPage() {
     },
     {
       icon: Zap,
-      title: '95.1% Akurasi',
-      description: 'YOLOv12 Medium mencapai F1-Score tertinggi untuk helmet detection',
+      title: '95.88% F1-Score',
+      description: 'YOLOv12 Medium mencapai F1-Score tertinggi untuk PPE detection (Safety Competition 2026)',
       color: 'emerald'
     }
   ]
@@ -35,10 +35,10 @@ export default function ResearchPage() {
     {
       title: 'Model Performance Comparison',
       stats: [
-        { label: 'YOLOv12 Nano (Baseline)', value: '92.8%', model: 'Helmet' },
-        { label: 'YOLOv12 Small (Balanced)', value: '94.5%', model: 'Helmet' },
-        { label: 'YOLOv12 Medium (Complex)', value: '95.1%', model: 'Helmet - BEST' },
-        { label: 'Faster R-CNN (Benchmark)', value: '98.0%', model: 'Worker' }
+        { label: 'YOLOv12 Nano (STF)', value: '78.53%', model: 'F1-Score - Best STF' },
+        { label: 'YOLOv12 Small', value: '95.63%', model: 'F1-Score (PPE)' },
+        { label: 'YOLOv12 Medium', value: '95.88%', model: 'F1-Score (PPE) - BEST' },
+        { label: 'Faster R-CNN', value: '51.43%', model: 'F1-Score (STF) - Benchmark' }
       ],
       bgColor: 'emerald'
     }
@@ -190,19 +190,19 @@ export default function ResearchPage() {
               </div>
               <div className="space-y-4">
                 <div className="bg-white/20 rounded p-3">
-                  <p className="text-sm opacity-90">Helmet Detection</p>
-                  <p className="text-3xl font-bold">95.1%</p>
-                  <p className="text-xs opacity-75">YOLOv12 F1-Score</p>
+                  <p className="text-sm opacity-90">PPE Detection</p>
+                  <p className="text-3xl font-bold">95.88%</p>
+                  <p className="text-xs opacity-75">YOLOv12 Medium F1-Score</p>
                 </div>
                 <div className="bg-white/20 rounded p-3">
-                  <p className="text-sm opacity-90">Worker Accuracy</p>
-                  <p className="text-3xl font-bold">93.4%</p>
-                  <p className="text-xs opacity-75">Faster R-CNN</p>
+                  <p className="text-sm opacity-90">STF Detection</p>
+                  <p className="text-3xl font-bold">78.53%</p>
+                  <p className="text-xs opacity-75">YOLOv12 Nano F1-Score</p>
                 </div>
                 <div className="bg-white/20 rounded p-3">
-                  <p className="text-sm opacity-90">Safety Vest</p>
-                  <p className="text-3xl font-bold">95.4%</p>
-                  <p className="text-xs opacity-75">YOLOv12</p>
+                  <p className="text-sm opacity-90">Fastest Inference</p>
+                  <p className="text-3xl font-bold">8.2ms</p>
+                  <p className="text-xs opacity-75\">YOLOv12 Small</p>
                 </div>
               </div>
             </div>

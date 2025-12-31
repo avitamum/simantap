@@ -80,7 +80,7 @@ export default function DetectionPage() {
             Real-time PPE compliance dan hazard detection menggunakan AI Computer Vision
           </p>
           <p className="text-sm text-gray-500">
-            Powered by YOLOv12 Small (94.5% accuracy) & Faster R-CNN (98% worker detection)
+            Powered by YOLOv12 Medium (95.88% F1-Score PPE, 17.3ms) & YOLOv12 Nano (78.53% F1-Score STF, 11.3ms) - Safety Competition 2026
           </p>
         </div>
 
@@ -98,7 +98,7 @@ export default function DetectionPage() {
                 <p className="text-sm text-gray-600">
                   Detect helmet, safety vest, safety shoes, dan worker compliance status
                 </p>
-                <p className="text-xs text-emerald-600 font-semibold mt-2">✓ 95%+ Accuracy</p>
+                <p className="text-xs text-emerald-600 font-semibold mt-2">✓ 95.88% F1-Score (YOLOv12 Medium)</p>
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function DetectionPage() {
                 <p className="text-sm text-gray-600">
                   Identifikasi Slip, Trip, Fall hazards menggunakan texture analysis
                 </p>
-                <p className="text-xs text-yellow-600 font-semibold mt-2">✓ Advanced Detection</p>
+                <p className="text-xs text-yellow-600 font-semibold mt-2">✓ 78.53% F1-Score (YOLOv12 Nano)</p>
               </div>
             </div>
           </div>
