@@ -20,6 +20,7 @@ interface RecentEvent {
 export default function DetectionPage() {
   const [detections, setDetections] = useState<Detection[]>([])
   const [compliance, setCompliance] = useState<ComplianceAssessment | null>(null)
+  const [stfResult, setStfResult] = useState<any>(null)
   const [isDetecting, setIsDetecting] = useState(false)
   const [detectionMode, setDetectionMode] = useState<'ppe' | 'stf'>('ppe')
   const [recentEvents, setRecentEvents] = useState<RecentEvent[]>([])
@@ -62,6 +63,83 @@ export default function DetectionPage() {
       alert('Detection failed. Please check if backend is running.')
     } finally {
       setIsDetecting(false)
+    }
+  }
+
+  const handleRealtimeDetection = (result: any) => {
+    // Handle detection results from backend
+    // Backend v5.0 returns: {detections, compliance, stf, timestamp}
+    // NOTE: Backend returns detections in 640x640 space, but video is variable size
+    // We don't need to scale because the SVG viewBox already handles it
+    
+    console.log('[Real-time] Detection result:', result)
+    console.log('[Real-time] Result keys:', Object.keys(result))
+    console.log('[Real-time] Detections array:', result.detections)
+    console.log('[Real-time] Detections count:', result.detections ? result.detections.length : 'undefined')
+    
+    try {
+      // Handle PPE detection (compliance result)
+      if (result.compliance && detectionMode === 'ppe') {
+        // PPE Detection Response - only process when in PPE mode
+        if (result.detections && result.detections.length > 0) {
+          console.log(`[Real-time] ✅ Setting PPE detections: ${result.detections.length} objects`)
+          for (let i = 0; i < result.detections.length; i++) {
+            const det = result.detections[i]
+            console.log(`  [${i}] ${det.class_name}: ${(det.confidence*100).toFixed(1)}% @ ${JSON.stringify(det.bbox)}`)
+          }
+          setDetections(result.detections)
+        } else {
+          console.log('[Real-time] ⚠️ No PPE objects in this frame, keeping previous detections')
+        }
+        setCompliance(result.compliance)
+        
+        // Update session stats for PPE
+        setSessionStats(prev => {
+          const newViolations = result.compliance.hazard_level !== 'Low' && result.compliance.hazard_level !== 'Unknown' ? 1 : 0
+          return {
+            totalScans: prev.totalScans + 1,
+            violations: prev.violations + newViolations,
+            avgCompliance: ((prev.avgCompliance * prev.totalScans) + result.compliance.compliance_rate) / (prev.totalScans + 1)
+          }
+        })
+
+        // Add to recent events (only if worker detected)
+        if (result.compliance.has_worker) {
+          const newEvent: RecentEvent = {
+            id: Date.now(),
+            timestamp: new Date().toISOString(),
+            message: result.compliance.alert_message,
+            level: result.compliance.hazard_level
+          }
+          setRecentEvents(prev => [newEvent, ...prev].slice(0, 10))
+        }
+      }
+      
+      // Handle STF detection - only process when in STF mode
+      if (result.stf && detectionMode === 'stf') {
+        setStfResult(result.stf)
+        console.log(`[Real-time] ✅ STF result:`, result.stf)
+        
+        // Show STF hazard detections as bounding boxes
+        if (result.stf.all_hazards && result.stf.all_hazards.length > 0) {
+          // Convert STF hazards to Detection format for overlay
+          const stfDetections: Detection[] = result.stf.all_hazards.map((hazard: any) => ({
+            class_id: hazard.class_id,
+            class_name: `${hazard.stf_category}: ${hazard.class_name}`,
+            confidence: hazard.confidence,
+            bbox: hazard.bbox
+          }))
+          console.log(`[Real-time] ✅ Setting STF detections: ${stfDetections.length} hazards`)
+          setDetections(stfDetections)
+        } else {
+          // No hazards detected
+          setDetections([])
+        }
+        // Clear compliance for STF mode
+        setCompliance(null)
+      }
+    } catch (error) {
+      console.error('Error handling realtime detection:', error)
     }
   }
 
@@ -125,7 +203,11 @@ export default function DetectionPage() {
         <div className="flex items-center space-x-4 mb-8">
           <span className="text-sm font-semibold text-gray-700">Active Mode:</span>
           <button
-            onClick={() => setDetectionMode('ppe')}
+            onClick={() => {
+              setDetectionMode('ppe')
+              setDetections([])
+              setStfResult(null)
+            }}
             className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-2 ${
               detectionMode === 'ppe'
                 ? 'bg-emerald-600 text-white shadow-lg scale-105'
@@ -136,7 +218,11 @@ export default function DetectionPage() {
             <span>PPE Detection</span>
           </button>
           <button
-            onClick={() => setDetectionMode('stf')}
+            onClick={() => {
+              setDetectionMode('stf')
+              setDetections([])
+              setCompliance(null)
+            }}
             className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-2 ${
               detectionMode === 'stf'
                 ? 'bg-yellow-600 text-white shadow-lg scale-105'
@@ -163,6 +249,8 @@ export default function DetectionPage() {
                 hazardLevel={compliance?.hazard_level || 'Low'}
                 isDetecting={isDetecting}
                 onCapture={handleCapture}
+                onRealtimeDetection={handleRealtimeDetection}
+                detectionMode={detectionMode}
               />
               
               {isDetecting && (
@@ -172,12 +260,136 @@ export default function DetectionPage() {
               )}
             </div>
 
-            {/* Detection Results */}
-            {detections.length > 0 && (
+            {/* Detection Results for PPE */}
+            {detectionMode === 'ppe' && detections.length > 0 && (
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
                 <div className="flex items-center space-x-3 mb-6">
                   <Eye className="w-6 h-6 text-blue-600" />
-                  <h3 className="text-xl font-bold text-gray-900">Detection Results</h3>
+                  <h3 className="text-xl font-bold text-gray-900">PPE Detection Results</h3>
+                </div>
+                <div className="space-y-4">
+                  {detections.map((detection, index) => (
+                    <div key={index}>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-semibold text-gray-700">{detection.class_name}</span>
+                        <span className="text-sm font-bold text-gray-900">
+                          {(detection.confidence * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <ProgressBar
+                        label=""
+                        value={detection.confidence * 100}
+                        color={detection.confidence > 0.9 ? 'emerald' : detection.confidence > 0.7 ? 'yellow' : 'red'}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* STF Hazard Details */}
+            {detectionMode === 'stf' && stfResult && (
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <div className="flex items-center space-x-3 mb-6">
+                  <AlertTriangle className="w-6 h-6 text-yellow-600" />
+                  <h3 className="text-xl font-bold text-gray-900">STF Hazard Analysis</h3>
+                </div>
+
+                {/* Risk Level Summary */}
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className={`p-4 rounded-lg text-center ${
+                    !stfResult.safe 
+                      ? 'bg-red-50 border border-red-300' 
+                      : 'bg-emerald-50 border border-emerald-300'
+                  }`}>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">HAZARD STATUS</p>
+                    <p className={`text-2xl font-bold ${
+                      !stfResult.safe ? 'text-red-600' : 'text-emerald-600'
+                    }`}>
+                      {stfResult.safe ? 'Safe' : 'Hazard'}
+                    </p>
+                  </div>
+                  <div className={`p-4 rounded-lg text-center ${
+                    stfResult.stf_category === 'Slip' ? 'bg-blue-50 border border-blue-300' :
+                    stfResult.stf_category === 'Trip' ? 'bg-orange-50 border border-orange-300' :
+                    stfResult.stf_category === 'Fall' ? 'bg-red-50 border border-red-300' :
+                    'bg-gray-50 border border-gray-300'
+                  }`}>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">HAZARD TYPE</p>
+                    <p className={`text-2xl font-bold ${
+                      stfResult.stf_category === 'Slip' ? 'text-blue-600' :
+                      stfResult.stf_category === 'Trip' ? 'text-orange-600' :
+                      stfResult.stf_category === 'Fall' ? 'text-red-600' :
+                      'text-gray-600'
+                    }`}>
+                      {stfResult.stf_category || 'None'}
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-purple-50 border border-purple-300 text-center">
+                    <p className="text-xs font-semibold text-gray-600 mb-1">CONFIDENCE</p>
+                    <p className="text-2xl font-bold text-purple-600">
+                      {(stfResult.confidence * 100).toFixed(1)}%
+                    </p>
+                  </div>
+                </div>
+
+                {/* Detected Hazard Info */}
+                {!stfResult.safe && (
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold text-gray-700 mb-3">Detected Hazard:</p>
+                    <div className={`p-4 rounded-lg border-l-4 ${
+                      stfResult.stf_category === 'Slip' ? 'bg-blue-50 border-blue-500' :
+                      stfResult.stf_category === 'Trip' ? 'bg-orange-50 border-orange-500' :
+                      stfResult.stf_category === 'Fall' ? 'bg-red-50 border-red-500' :
+                      'bg-gray-50 border-gray-500'
+                    }`}>
+                      <p className={`text-sm font-bold ${
+                        stfResult.stf_category === 'Slip' ? 'text-blue-700' :
+                        stfResult.stf_category === 'Trip' ? 'text-orange-700' :
+                        stfResult.stf_category === 'Fall' ? 'text-red-700' :
+                        'text-gray-700'
+                      }`}>
+                        {stfResult.stf_category === 'Slip' && '💧 Slip Hazard Detected'}
+                        {stfResult.stf_category === 'Trip' && '🚧 Trip Hazard Detected'}
+                        {stfResult.stf_category === 'Fall' && '⚠️ Fall Hazard Detected'}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Type: <span className="font-semibold">{stfResult.hazard_type}</span>
+                      </p>
+                    </div>
+
+                    {/* Show all hazards if available */}
+                    {stfResult.all_hazards && stfResult.all_hazards.length > 1 && (
+                      <div className="mt-4">
+                        <p className="text-xs font-semibold text-gray-600 mb-2">All Detected Hazards:</p>
+                        <div className="space-y-2">
+                          {stfResult.all_hazards.map((hazard: any, idx: number) => (
+                            <div key={idx} className="flex items-center justify-between text-sm bg-gray-50 p-2 rounded">
+                              <span className="font-medium">{hazard.stf_category}: {hazard.class_name}</span>
+                              <span className="text-gray-600">{(hazard.confidence * 100).toFixed(1)}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {stfResult.safe && (
+                  <div className="p-4 rounded-lg bg-emerald-50 border-l-4 border-emerald-500">
+                    <p className="text-sm font-bold text-emerald-700">✓ Area is Safe</p>
+                    <p className="text-xs text-emerald-600 mt-1">No Slip, Trip, or Fall hazards detected</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Detection Results */}
+            {detectionMode === 'ppe' && detections.length > 0 && (
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <div className="flex items-center space-x-3 mb-6">
+                  <Eye className="w-6 h-6 text-blue-600" />
+                  <h3 className="text-xl font-bold text-gray-900">PPE Detection Results</h3>
                 </div>
                 <div className="space-y-4">
                   {detections.map((detection, index) => (

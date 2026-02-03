@@ -9,20 +9,20 @@ export interface RiskConfig {
 
 export const riskColorMap: Record<HazardLevel, RiskConfig> = {
   Low: {
-    color: 'green',
-    bgColor: 'bg-green-100',
-    textColor: 'text-green-700',
+    color: 'emerald',
+    bgColor: 'bg-emerald-50',
+    textColor: 'text-emerald-700',
     icon: '✓'
   },
   Medium: {
     color: 'yellow',
-    bgColor: 'bg-yellow-100',
+    bgColor: 'bg-yellow-50',
     textColor: 'text-yellow-700',
     icon: '⚠'
   },
   High: {
     color: 'red',
-    bgColor: 'bg-red-100',
+    bgColor: 'bg-red-50',
     textColor: 'text-red-700',
     icon: '✗'
   }

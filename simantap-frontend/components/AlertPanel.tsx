@@ -15,22 +15,29 @@ export default function AlertPanel({ level, message, details, onClose }: AlertPa
                         level === 'Medium' ? AlertCircle : 
                         CheckCircle
 
+  // Enhanced border color mapping
+  const borderColorMap = {
+    'High': 'border-red-500',
+    'Medium': 'border-yellow-500',
+    'Low': 'border-emerald-600'
+  }
+
   return (
-    <div className={`${config.bgColor} border-l-4 border-${config.color}-500 p-4 rounded-lg shadow-md relative animate-fade-in`}>
+    <div className={`${config.bgColor} border-l-4 ${borderColorMap[level]} p-5 rounded-lg shadow-md relative animate-fade-in`}>
       <div className="flex items-start">
-        <IconComponent className={`w-6 h-6 ${config.textColor} mr-3 flex-shrink-0 mt-0.5`} />
+        <IconComponent className={`w-6 h-6 ${config.textColor} mr-3 flex-shrink-0 mt-0.5 font-bold`} />
         <div className="flex-1">
-          <h3 className={`font-semibold ${config.textColor} mb-1`}>
-            {level} Risk Alert
+          <h3 className={`font-bold text-lg ${config.textColor} mb-1`}>
+            {level === 'High' ? '⚠️ High Risk Alert' : level === 'Medium' ? '⚡ Medium Risk Alert' : '✓ Low Risk - Safe'}
           </h3>
-          <p className={`text-sm ${config.textColor}`}>
+          <p className={`text-sm ${config.textColor} font-semibold`}>
             {message}
           </p>
           {details && details.length > 0 && (
-            <ul className={`mt-2 text-sm ${config.textColor} space-y-1`}>
+            <ul className={`mt-3 text-sm ${config.textColor} space-y-1`}>
               {details.map((detail, index) => (
                 <li key={index} className="flex items-center">
-                  <span className="mr-2">•</span>
+                  <span className="mr-2 font-bold">•</span>
                   {detail}
                 </li>
               ))}

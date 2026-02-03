@@ -5,11 +5,17 @@
 **SIMANTAP** is an AI-powered solution for real-time detection of personal protective equipment (PPE) and workplace hazard identification. Using advanced Computer Vision and Machine Learning technologies, SIMANTAP helps organizations monitor and ensure workplace safety compliance automatically.
 
 ### Key Features
-- 🎥 Real-time PPE detection via webcam
+- 🎥 Real-time PPE detection via webcam (Start Detection button)
 - 🚨 Automated safety alerts
 - 📊 Dashboard & compliance analytics  
 - 📸 Evidence capture & documentation
 - 📈 Data-driven risk analysis
+
+### 🎯 Model Performance (Safety Competition 2026)
+| Model | Task | F1-Score | Inference Time |
+|-------|------|----------|----------------|
+| **YOLOv12 Medium** | PPE Detection | 95.88% | 17.3ms |
+| **YOLOv12 Nano** | STF Detection | 78.53% | 11.3ms |
 
 ---
 
